@@ -4,6 +4,7 @@ import { Tabs } from 'expo-router';
 import Animated, { useAnimatedStyle, withSpring } from 'react-native-reanimated';
 import { Text, View, StyleSheet, Dimensions } from 'react-native';
 import { Feather } from '@expo/vector-icons';
+import { router, usePathname } from 'expo-router';
 
 const { width } = Dimensions.get('window');
 const AnimatedView = Animated.createAnimatedComponent(View);
@@ -11,6 +12,7 @@ const AnimatedView = Animated.createAnimatedComponent(View);
 export default function TabLayout() {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
+  const pathname = usePathname();
 
   const getAnimatedStyle = (focused: boolean) => useAnimatedStyle(() => ({
     transform: [
@@ -24,6 +26,11 @@ export default function TabLayout() {
   }));
 
   const handleCameraPress = async () => {
+    if (pathname !== "/camera") {
+      router.push("/camera");
+      return;
+    }
+    
     try {
       if (global.cameraRef?.current) {
         const photo = await global.cameraRef.current.takePictureAsync({
@@ -145,6 +152,7 @@ export default function TabLayout() {
               onTouchEnd={handleCameraPress}
             >
               <View style={styles.innerCircle} />
+              <View style={styles.glassEffect} />
               <Feather name="camera" size={32} color="#fff" />
               <Text style={[styles.label, { color: '#fff', marginTop: 2 }]}>
                 SCAN

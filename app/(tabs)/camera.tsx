@@ -6,13 +6,12 @@ import { Ionicons } from "@expo/vector-icons";
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
+global.cameraRef = null;
+
 export default function CameraScreen() {
   const [flashEnabled, setFlashEnabled] = useState(false);
-  
-  // Create a ref without useRef hook
-  const cameraRef = React.createRef();
+  const cameraRef = React.useRef(null);
 
-  // Set the camera ref to be accessible globally
   React.useEffect(() => {
     global.cameraRef = cameraRef;
     return () => {
@@ -43,6 +42,8 @@ export default function CameraScreen() {
         <View style={styles.topRightCorner} />
         <View style={styles.bottomLeftCorner} />
         <View style={styles.bottomRightCorner} />
+
+        
       </CameraView>
     </View>
   );
@@ -51,18 +52,21 @@ export default function CameraScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000000',
+    backgroundColor: '#000',
   },
   camera: {
     flex: 1,
-    width: SCREEN_WIDTH,
-    height: SCREEN_HEIGHT,
   },
-  allowText: {
-    textAlign: 'center',
-    color: 'white',
-    fontSize: 20,
-    marginBottom: 20,
+  flash: {
+    position: 'absolute',
+    top: 60,
+    left: 20,
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    width: 40,
+    height: 40,
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   topLeftCorner: {
     position: 'absolute',
@@ -112,35 +116,16 @@ const styles = StyleSheet.create({
     right: '20%',
     bottom: '30%',
   },
-  button: {
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
-    width: 150,
-    borderRadius: 10,
-    padding: 10,
-  },
-  flash: {
-    position: 'absolute',
-    top: 60,
-    left: 20,
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
-    width: 40,
-    height: 40,
-    borderRadius: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   buttonContainer: {
     position: 'absolute',
-    bottom: 30,
+    bottom: 90,
     width: '100%',
-    height: 50,
-    justifyContent: 'center',
     alignItems: 'center',
   },
+  
   text: {
-    fontSize: 24,
-    fontWeight: 'bold',
+    fontSize: 16,
+    fontWeight: '600',
     color: 'white',
-    textAlign: 'center',
-  },
+  }
 });
