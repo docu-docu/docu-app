@@ -3,15 +3,10 @@ import { useColorScheme } from 'react-native';
 import { Tabs } from 'expo-router';
 import Animated, { useAnimatedStyle, withSpring } from 'react-native-reanimated';
 import { Text, View, StyleSheet, Dimensions } from 'react-native';
+import { Feather } from '@expo/vector-icons';
 
 const { width } = Dimensions.get('window');
 const AnimatedView = Animated.createAnimatedComponent(View);
-
-const IconSymbol = ({ name, size, color }: { name: string; size: number; color: string }) => (
-  <View style={{ width: size, height: size, backgroundColor: color, borderRadius: size / 2 }}>
-    <Text style={{ color: '#fff', textAlign: 'center', fontSize: size / 3 }}>{name[0].toUpperCase()}</Text>
-  </View>
-);
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -31,13 +26,12 @@ export default function TabLayout() {
   const styles = StyleSheet.create({
     tabBar: {
       position: 'absolute',
-      bottom: 10,
+      bottom: 30,
       left: width * 0.05,
-      height: 75,
+      height: 65,
+      width: width * 0.9,
       backgroundColor: isDark ? '#000' : '#fff',
       borderRadius: 40,
-      borderWidth: 2,
-      borderColor: '#2f95dc',
       shadowColor: '#000',
       shadowOffset: { width: 0, height: 20 },
       shadowOpacity: isDark ? 0.4 : 0.15,
@@ -46,35 +40,59 @@ export default function TabLayout() {
       alignItems: 'center',
       flexDirection: 'row',
       justifyContent: 'space-between',
-      paddingHorizontal: 15,
-      width: width * 0.9,
+      paddingHorizontal: 40,
+      overflow: 'visible', // This ensures the scan button can overflow
     },
-    focusedTab: {
-      width: 70,
-      height: 60,
-      backgroundColor: isDark ? '#111' : '#f5f5f5',
-      borderRadius: 14,
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    unfocusedTab: {
-      width: 70,
+    sideTab: {
+      width: 50,
       height: 50,
       justifyContent: 'center',
       alignItems: 'center',
+      borderRadius: 25,
+    },
+    cameraTab: {
+      position: 'absolute',
+      bottom: 20, // Lowered position
+      left: '50%',
+      marginLeft: -45, // Half of width
+      width: 90, // Wider button
+      height: 90, // Taller to match width
+      backgroundColor: '#2f95dc',
+      borderRadius: 45,
+      justifyContent: 'center',
+      alignItems: 'center',
+      shadowColor: '#2f95dc',
+      shadowOffset: { width: 0, height: 8 },
+      shadowOpacity: 0.5,
+      shadowRadius: 16,
+      elevation: 25,
+      borderWidth: 3,
+      borderColor: isDark ? '#000' : '#fff',
+    },
+    innerCircle: {
+      position: 'absolute',
+      width: 76,
+      height: 76,
+      borderRadius: 38,
+      backgroundColor: '#1e88e5',
+      opacity: 0.7,
+      transform: [{ scale: 0.85 }],
+    },
+    glassEffect: {
+      position: 'absolute',
+      width: '100%',
+      height: '100%',
+      borderRadius: 45,
+      backgroundColor: 'rgba(255, 255, 255, 0.1)',
+      transform: [{ scaleY: 0.6 }],
+      top: 10,
     },
     label: {
-      fontSize: 11,
+      fontSize: 12,
       fontWeight: '600',
       color: isDark ? '#fff' : '#000',
-      marginTop: 5,
-    },
-    labelFocused: {
-      fontSize: 11,
-      fontWeight: '700',
-      color: isDark ? '#fff' : '#000',
-      marginTop: 5,
-    },
+      marginTop: 4,
+    }
   });
 
   return (
@@ -83,6 +101,7 @@ export default function TabLayout() {
         tabBarStyle: styles.tabBar,
         tabBarShowLabel: false,
         headerShown: false,
+        tabBarHideOnKeyboard: true,
       }}
     >
       <Tabs.Screen
@@ -90,13 +109,16 @@ export default function TabLayout() {
         options={{
           tabBarIcon: ({ focused }) => (
             <AnimatedView
-              style={[
-                focused ? styles.focusedTab : styles.unfocusedTab,
-                getAnimatedStyle(focused),
-              ]}
+              style={[styles.sideTab, getAnimatedStyle(focused)]}
             >
-              <IconSymbol name="folder" size={22} color={isDark ? '#fff' : '#000'} />
-              <Text style={focused ? styles.labelFocused : styles.label}>DOCS</Text>
+              <Feather 
+                name="folder" 
+                size={24} 
+                color={focused ? '#2f95dc' : isDark ? '#666' : '#999'} 
+              />
+              <Text style={[styles.label, { color: focused ? '#2f95dc' : isDark ? '#666' : '#999' }]}>
+                DOCS
+              </Text>
             </AnimatedView>
           ),
         }}
@@ -105,14 +127,13 @@ export default function TabLayout() {
         name="camera"
         options={{
           tabBarIcon: ({ focused }) => (
-            <AnimatedView
-              style={[
-                focused ? styles.focusedTab : styles.unfocusedTab,
-                getAnimatedStyle(focused),
-              ]}
-            >
-              <IconSymbol name="camera" size={22} color={isDark ? '#fff' : '#000'} />
-              <Text style={focused ? styles.labelFocused : styles.label}>SCAN</Text>
+            <AnimatedView style={[styles.cameraTab, getAnimatedStyle(focused)]}>
+              <View style={styles.innerCircle} />
+              <View style={styles.glassEffect} />
+              <Feather name="camera" size={32} color="#fff" />
+              <Text style={[styles.label, { color: '#fff', marginTop: 2 }]}>
+                SCAN
+              </Text>
             </AnimatedView>
           ),
         }}
@@ -122,13 +143,16 @@ export default function TabLayout() {
         options={{
           tabBarIcon: ({ focused }) => (
             <AnimatedView
-              style={[
-                focused ? styles.focusedTab : styles.unfocusedTab,
-                getAnimatedStyle(focused),
-              ]}
+              style={[styles.sideTab, getAnimatedStyle(focused)]}
             >
-              <IconSymbol name="gear" size={22} color={isDark ? '#fff' : '#000'} />
-              <Text style={focused ? styles.labelFocused : styles.label}>SETTINGS</Text>
+              <Feather 
+                name="settings" 
+                size={24} 
+                color={focused ? '#2f95dc' : isDark ? '#666' : '#999'} 
+              />
+              <Text style={[styles.label, { color: focused ? '#2f95dc' : isDark ? '#666' : '#999' }]}>
+                SETTINGS
+              </Text>
             </AnimatedView>
           ),
         }}
