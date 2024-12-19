@@ -1,35 +1,32 @@
 import React from 'react';
-import { Text, useColorScheme, View, StyleSheet, Dimensions } from 'react-native';
+import { useColorScheme } from 'react-native';
 import { Tabs } from 'expo-router';
 import Animated, { useAnimatedStyle, withSpring } from 'react-native-reanimated';
+import { Text, View, StyleSheet, Dimensions } from 'react-native';
 
 const { width } = Dimensions.get('window');
 const AnimatedView = Animated.createAnimatedComponent(View);
 
-const IconSymbol = ({ name, size, color, style }: { name: string; size: number; color: string; style?: object }) => {
-  return (
-    <View style={[{ width: size, height: size, borderRadius: size / 2, backgroundColor: color }, style]}>
-      <Text style={{ color: '#fff', fontSize: size / 3, textAlign: 'center' }}>{name[0].toUpperCase()}</Text>
-    </View>
-  );
-};
+const IconSymbol = ({ name, size, color }: { name: string; size: number; color: string }) => (
+  <View style={{ width: size, height: size, backgroundColor: color, borderRadius: size / 2 }}>
+    <Text style={{ color: '#fff', textAlign: 'center', fontSize: size / 3 }}>{name[0].toUpperCase()}</Text>
+  </View>
+);
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
 
-  const getAnimatedStyle = (focused: boolean) => useAnimatedStyle(() => {
-    return {
-      transform: [
-        {
-          scale: withSpring(focused ? 1 : 0.9, {
-            damping: 15,
-            stiffness: 150,
-          }),
-        },
-      ],
-    };
-  });
+  const getAnimatedStyle = (focused: boolean) => useAnimatedStyle(() => ({
+    transform: [
+      {
+        scale: withSpring(focused ? 1 : 0.9, {
+          damping: 15,
+          stiffness: 150,
+        }),
+      },
+    ],
+  }));
 
   const styles = StyleSheet.create({
     tabBar: {
@@ -42,10 +39,7 @@ export default function TabLayout() {
       borderWidth: 2,
       borderColor: '#2f95dc',
       shadowColor: '#000',
-      shadowOffset: {
-        width: 0,
-        height: 20,
-      },
+      shadowOffset: { width: 0, height: 20 },
       shadowOpacity: isDark ? 0.4 : 0.15,
       shadowRadius: 30,
       elevation: 20,
@@ -55,10 +49,6 @@ export default function TabLayout() {
       paddingHorizontal: 15,
       width: width * 0.9,
     },
-    tabItem: {
-      flex: 1,
-      alignItems: 'center',
-    },
     focusedTab: {
       width: 70,
       height: 60,
@@ -66,7 +56,6 @@ export default function TabLayout() {
       borderRadius: 14,
       justifyContent: 'center',
       alignItems: 'center',
-      marginBottom: 5,
     },
     unfocusedTab: {
       width: 70,
@@ -79,7 +68,6 @@ export default function TabLayout() {
       fontWeight: '600',
       color: isDark ? '#fff' : '#000',
       marginTop: 5,
-      opacity: 0.7,
     },
     labelFocused: {
       fontSize: 11,
@@ -91,11 +79,11 @@ export default function TabLayout() {
 
   return (
     <Tabs
-      screenOptions={({ route }) => ({
-        tabBarStyle: route.name === 'camera' ? { display: 'none' } : styles.tabBar,
+      screenOptions={{
+        tabBarStyle: styles.tabBar,
         tabBarShowLabel: false,
         headerShown: false,
-      })}
+      }}
     >
       <Tabs.Screen
         name="docs"
@@ -107,12 +95,7 @@ export default function TabLayout() {
                 getAnimatedStyle(focused),
               ]}
             >
-              <IconSymbol
-                name="folder"
-                size={22}
-                color={isDark ? '#fff' : '#000'}
-                style={{ opacity: focused ? 1 : 0.5 }}
-              />
+              <IconSymbol name="folder" size={22} color={isDark ? '#fff' : '#000'} />
               <Text style={focused ? styles.labelFocused : styles.label}>DOCS</Text>
             </AnimatedView>
           ),
@@ -128,12 +111,7 @@ export default function TabLayout() {
                 getAnimatedStyle(focused),
               ]}
             >
-              <IconSymbol
-                name="camera"
-                size={22}
-                color={isDark ? '#fff' : '#000'}
-                style={{ opacity: focused ? 1 : 0.5 }}
-              />
+              <IconSymbol name="camera" size={22} color={isDark ? '#fff' : '#000'} />
               <Text style={focused ? styles.labelFocused : styles.label}>SCAN</Text>
             </AnimatedView>
           ),
@@ -149,13 +127,8 @@ export default function TabLayout() {
                 getAnimatedStyle(focused),
               ]}
             >
-              <IconSymbol
-                name="gear"
-                size={22}
-                color={isDark ? '#fff' : '#000'}
-                style={{ opacity: focused ? 1 : 0.5 }}
-              />
-              <Text style={focused ? styles.labelFocused : styles.label}>SETUP</Text>
+              <IconSymbol name="gear" size={22} color={isDark ? '#fff' : '#000'} />
+              <Text style={focused ? styles.labelFocused : styles.label}>SETTINGS</Text>
             </AnimatedView>
           ),
         }}
