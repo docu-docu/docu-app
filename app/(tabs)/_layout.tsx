@@ -26,25 +26,25 @@ export default function TabLayout() {
   const styles = StyleSheet.create({
     tabBar: {
       position: 'absolute',
-      bottom: 30,
-      left: width * 0.05,
+      bottom: 25,
       height: 65,
-      width: width * 0.9,
       backgroundColor: isDark ? '#000' : '#fff',
-      borderRadius: 40,
+      borderRadius: 25,
       shadowColor: '#000',
       shadowOffset: { width: 0, height: 20 },
       shadowOpacity: isDark ? 0.4 : 0.15,
       shadowRadius: 30,
-      elevation: 20,
       alignItems: 'center',
       flexDirection: 'row',
       justifyContent: 'space-between',
       paddingHorizontal: 40,
-      overflow: 'visible', // This ensures the scan button can overflow
+      overflow: 'visible',
+      marginRight: 10,
+      marginLeft: 10,
+
     },
     sideTab: {
-      width: 50,
+      width: 100,
       height: 50,
       justifyContent: 'center',
       alignItems: 'center',
@@ -52,11 +52,11 @@ export default function TabLayout() {
     },
     cameraTab: {
       position: 'absolute',
-      bottom: 20, // Lowered position
+      bottom: 0, 
       left: '50%',
-      marginLeft: -45, // Half of width
-      width: 90, // Wider button
-      height: 90, // Taller to match width
+      marginLeft: -45, 
+      width: 90, 
+      height: 90, 
       backgroundColor: '#2f95dc',
       borderRadius: 45,
       justifyContent: 'center',
