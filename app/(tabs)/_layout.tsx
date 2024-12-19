@@ -6,10 +6,9 @@ import Animated, { useAnimatedStyle, withSpring } from 'react-native-reanimated'
 const { width } = Dimensions.get('window');
 const AnimatedView = Animated.createAnimatedComponent(View);
 
-// Placeholder for IconSymbol component
 const IconSymbol = ({ name, size, color, style }: { name: string; size: number; color: string; style?: object }) => {
   return (
-    <View style={[{ width: size, height: size, backgroundColor: color, borderRadius: size / 2 }, style]}>
+    <View style={[{ width: size, height: size, borderRadius: size / 2, backgroundColor: color }, style]}>
       <Text style={{ color: '#fff', fontSize: size / 3, textAlign: 'center' }}>{name[0].toUpperCase()}</Text>
     </View>
   );
@@ -35,12 +34,13 @@ export default function TabLayout() {
   const styles = StyleSheet.create({
     tabBar: {
       position: 'absolute',
-      bottom: 30,
+      bottom: 10,
+      left: width * 0.05,
       height: 75,
       backgroundColor: isDark ? '#000' : '#fff',
       borderRadius: 40,
-      borderWidth: 1,
-      borderColor: isDark ? '#222' : '#eee',
+      borderWidth: 2,
+      borderColor: '#2f95dc',
       shadowColor: '#000',
       shadowOffset: {
         width: 0,
@@ -53,6 +53,7 @@ export default function TabLayout() {
       flexDirection: 'row',
       justifyContent: 'space-between',
       paddingHorizontal: 15,
+      width: width * 0.9,
     },
     tabItem: {
       flex: 1,
@@ -97,7 +98,7 @@ export default function TabLayout() {
       })}
     >
       <Tabs.Screen
-        name="index"
+        name="docs"
         options={{
           tabBarIcon: ({ focused }) => (
             <AnimatedView
