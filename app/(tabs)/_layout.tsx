@@ -23,25 +23,41 @@ export default function TabLayout() {
     ],
   }));
 
+  const handleCameraPress = async () => {
+    try {
+      if (global.cameraRef?.current) {
+        const photo = await global.cameraRef.current.takePictureAsync({
+          imageType: 'jpg',
+          base64: false,
+          skipProcessing: false,
+        });
+        console.log('Photo taken:', photo.uri);
+      }
+    } catch (error) {
+      console.error('Failed to take picture:', error);
+    }
+  };
+
   const styles = StyleSheet.create({
     tabBar: {
       position: 'absolute',
       bottom: 25,
-      height: 65,
+      left: 20,
+      right: 20,
+      height: 75,
       backgroundColor: isDark ? '#000' : '#fff',
       borderRadius: 25,
       shadowColor: '#000',
       shadowOffset: { width: 0, height: 20 },
       shadowOpacity: isDark ? 0.4 : 0.15,
       shadowRadius: 30,
+      elevation: 20,
       alignItems: 'center',
       flexDirection: 'row',
       justifyContent: 'space-between',
       paddingHorizontal: 40,
-      overflow: 'visible',
       marginRight: 10,
       marginLeft: 10,
-
     },
     sideTab: {
       width: 100,
@@ -52,11 +68,11 @@ export default function TabLayout() {
     },
     cameraTab: {
       position: 'absolute',
-      bottom: 0, 
+      bottom: 0,
       left: '50%',
-      marginLeft: -45, 
-      width: 90, 
-      height: 90, 
+      marginLeft: -45,
+      width: 90,
+      height: 90,
       backgroundColor: '#2f95dc',
       borderRadius: 45,
       justifyContent: 'center',
@@ -101,16 +117,13 @@ export default function TabLayout() {
         tabBarStyle: styles.tabBar,
         tabBarShowLabel: false,
         headerShown: false,
-        tabBarHideOnKeyboard: true,
       }}
     >
       <Tabs.Screen
         name="docs"
         options={{
           tabBarIcon: ({ focused }) => (
-            <AnimatedView
-              style={[styles.sideTab, getAnimatedStyle(focused)]}
-            >
+            <AnimatedView style={[styles.sideTab, getAnimatedStyle(focused)]}>
               <Feather 
                 name="folder" 
                 size={24} 
@@ -127,9 +140,11 @@ export default function TabLayout() {
         name="camera"
         options={{
           tabBarIcon: ({ focused }) => (
-            <AnimatedView style={[styles.cameraTab, getAnimatedStyle(focused)]}>
+            <AnimatedView 
+              style={[styles.cameraTab, getAnimatedStyle(focused)]}
+              onTouchEnd={handleCameraPress}
+            >
               <View style={styles.innerCircle} />
-              <View style={styles.glassEffect} />
               <Feather name="camera" size={32} color="#fff" />
               <Text style={[styles.label, { color: '#fff', marginTop: 2 }]}>
                 SCAN
@@ -142,9 +157,7 @@ export default function TabLayout() {
         name="settings"
         options={{
           tabBarIcon: ({ focused }) => (
-            <AnimatedView
-              style={[styles.sideTab, getAnimatedStyle(focused)]}
-            >
+            <AnimatedView style={[styles.sideTab, getAnimatedStyle(focused)]}>
               <Feather 
                 name="settings" 
                 size={24} 
