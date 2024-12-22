@@ -31,18 +31,26 @@ export default function TabLayout() {
 
   const handleCameraPress = async () => {
     if (pathname !== "/camera") {
+      console.log('Navigating to camera');
       router.push("/camera");
       return;
     }
     
     try {
+      console.log('Attempting to take picture...');
       if (global.cameraRef?.current) {
         const photo = await global.cameraRef.current.takePictureAsync({
           imageType: 'jpg',
           base64: false,
           skipProcessing: false,
         });
-        console.log('Photo taken:', photo.uri);
+        console.log('Photo taken successfully:', photo.uri);
+        
+        // Immediately navigate to name-scan with the photo URI
+        router.replace({
+          pathname: "/name-scan",
+          params: { photoUri: photo.uri }
+        });
       }
     } catch (error) {
       console.error('Failed to take picture:', error);

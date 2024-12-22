@@ -13,38 +13,57 @@ export default function Docs() {
 
   const loadDocuments = async () => {
     try {
+      console.log('Starting loadDocuments...');
       // Check Camera directory first
       const cameraDir = `${FileSystem.cacheDirectory}Camera/`;
       const docsDir = `${FileSystem.documentDirectory}scans/`;
       
+      console.log('Directories:', {
+        cameraDir,
+        docsDir
+      });
+  
       // Ensure scans directory exists
       const dirExists = await FileSystem.getInfoAsync(docsDir);
+      console.log('Scans directory exists:', dirExists.exists);
+      
       if (!dirExists.exists) {
+        console.log('Creating scans directory...');
         await FileSystem.makeDirectoryAsync(docsDir, { intermediates: true });
       }
-
+  
       // Move any new photos from Camera to scans
       const cameraExists = await FileSystem.getInfoAsync(cameraDir);
+      console.log('Camera directory exists:', cameraExists.exists);
+      
       if (cameraExists.exists) {
         const cameraFiles = await FileSystem.readDirectoryAsync(cameraDir);
+        console.log('Found camera files:', cameraFiles);
+        
         for (const file of cameraFiles) {
           if (file.endsWith('.jpg')) {
+            console.log('Processing camera file:', file);
             const timestamp = new Date().getTime();
             const newFileName = `scan_${timestamp}.jpg`;
             try {
+              console.log(`Moving ${file} to ${newFileName}`);
               await FileSystem.moveAsync({
                 from: `${cameraDir}${file}`,
                 to: `${docsDir}${newFileName}`
               });
+              console.log('File moved successfully');
             } catch (moveError) {
               console.error('Error moving file:', moveError);
             }
           }
         }
       }
-
+  
       // Load all documents
+      console.log('Reading documents directory...');
       const files = await FileSystem.readDirectoryAsync(docsDir);
+      console.log('Found document files:', files);
+      
       const docsWithInfo = await Promise.all(
         files.map(async (filename) => {
           const fileInfo = await FileSystem.getInfoAsync(`${docsDir}${filename}`);
@@ -57,24 +76,26 @@ export default function Docs() {
         })
       );
       
+      console.log('Processed documents:', docsWithInfo);
+      
       const sortedDocs = docsWithInfo.sort((a, b) => b.date.localeCompare(a.date));
       setDocuments(sortedDocs);
       setFilteredDocuments(sortedDocs);
+      
+      console.log('Documents loaded successfully');
     } catch (error) {
-      console.error('Error loading documents:', error);
+      console.error('Error in loadDocuments:', error);
     }
   };
 
+
   // Load documents when screen focuses
   useFocusEffect(
-    React.useCallback(() => {
-      loadDocuments();
-      
-      // Set up polling for new documents
-      const interval = setInterval(loadDocuments, 1000);
-      return () => clearInterval(interval);
-    }, [])
-  );
+  React.useCallback(() => {
+    console.log('Docs screen focused, loading documents...');
+    loadDocuments();
+  }, [])
+);
 
   // Search functionality
   useEffect(() => {

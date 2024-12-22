@@ -1,8 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, useColorScheme } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import * as FileSystem from 'expo-file-system';
-import { Feather } from '@expo/vector-icons';
+
+useEffect(() => {
+  const checkFile = async () => {
+    if (photoUri) {
+      const exists = await FileSystem.getInfoAsync(photoUri);
+      console.log('Photo exists check:', exists);
+    }
+  };
+  checkFile();
+}, [photoUri]);
+
 
 export default function NameScan() {
   const [fileName, setFileName] = useState('');
@@ -12,6 +22,7 @@ export default function NameScan() {
   const isDark = colorScheme === 'dark';
 
   const savePhoto = async () => {
+    console.log('Starting save process...', photoUri);
     if (!fileName.trim()) return;
     
     try {
@@ -19,21 +30,27 @@ export default function NameScan() {
       const newFileName = `${fileName.trim()}_${timestamp}.jpg`;
       const docsDir = `${FileSystem.documentDirectory}scans/`;
       const newUri = `${docsDir}${newFileName}`;
-
+  
+      // Ensure directory exists
       const dirExists = await FileSystem.getInfoAsync(docsDir);
       if (!dirExists.exists) {
         await FileSystem.makeDirectoryAsync(docsDir, { intermediates: true });
       }
-
+  
       await FileSystem.moveAsync({
         from: photoUri,
         to: newUri
       });
-
-      router.push('/docs');
+  
+      console.log('File saved successfully at:', newUri);
+      
+      // Use replace instead of push to prevent stacking
+      router.replace('/(tabs)/docs');
     } catch (error) {
       console.error('Error saving file:', error);
     }
+
+    
   };
 
   const styles = StyleSheet.create({
