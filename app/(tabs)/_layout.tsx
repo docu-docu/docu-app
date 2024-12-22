@@ -1,4 +1,8 @@
 import React from 'react';
+
+declare global {
+  var cameraRef: React.RefObject<{ takePictureAsync: (options: { imageType: string; base64: boolean; skipProcessing: boolean; }) => Promise<{ uri: string; }> }>;
+}
 import { useColorScheme } from 'react-native';
 import { Tabs } from 'expo-router';
 import Animated, { useAnimatedStyle, withSpring } from 'react-native-reanimated';
@@ -54,7 +58,6 @@ export default function TabLayout() {
       height: 75,
       backgroundColor: isDark ? '#000' : '#fff',
       borderRadius: 25,
-      shadowColor: '#000',
       shadowOffset: { width: 0, height: 20 },
       shadowOpacity: isDark ? 0.4 : 0.15,
       shadowRadius: 30,
@@ -65,6 +68,8 @@ export default function TabLayout() {
       paddingHorizontal: 40,
       marginRight: 10,
       marginLeft: 10,
+      borderWidth: 2,
+      borderColor: isDark ? '#3d3d3d' : '#fff',
     },
     sideTab: {
       width: 100,
