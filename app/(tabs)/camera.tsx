@@ -27,7 +27,7 @@ export default function CameraScreen() {
         style={styles.camera}
         flash={flashEnabled ? "on" : "off"}
       >
-        {/* <TouchableOpacity
+        <TouchableOpacity
           style={styles.flash}
           onPress={() => setFlashEnabled(!flashEnabled)}
         >
@@ -36,7 +36,7 @@ export default function CameraScreen() {
             color="white"
             size={25}
           />
-        </TouchableOpacity> */}
+        </TouchableOpacity>
 
         <View style={styles.topLeftCorner} />
         <View style={styles.topRightCorner} />
