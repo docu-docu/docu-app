@@ -135,8 +135,8 @@ const styles = StyleSheet.create({
   },
   titleContainer: {
     paddingHorizontal: 20,
-    paddingTop: 25,
-    paddingBottom: 20,
+    paddingTop: 45,
+    paddingBottom: 0,
     backgroundColor: '#fff',
   },
   title: {

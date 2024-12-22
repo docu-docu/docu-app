@@ -55,6 +55,9 @@
         }
       ]
     ],
+    "fonts": [
+      "./assets/fonts/Tomorrow-Regular.ttf"
+    ],
     "experiments": {
       "typedRoutes": true
     }
