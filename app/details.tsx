@@ -2,6 +2,9 @@ import React from 'react';
 import { View, Text, Image, StyleSheet, ScrollView, useColorScheme, Dimensions, TouchableOpacity } from 'react-native';
 import { useLocalSearchParams, Stack, router } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
+import { GestureDetector, Gesture } from 'react-native-gesture-handler';
+import Animated, { useAnimatedStyle, withTiming, useSharedValue } from 'react-native-reanimated';
+import { runOnJS } from 'react-native-reanimated';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -10,51 +13,78 @@ export default function DocDetails() {
   const { uri, title, date } = params;
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
+  const translateX = useSharedValue(0);
+
+  const handleNavigateBack = () => {
+    router.push('/(tabs)/docs'); 
+  };
+
+  const swipeGesture = Gesture.Pan()
+  .onUpdate((event) => {
+    if (event.translationX > 0) { 
+      translateX.value = event.translationX;
+    }
+  })
+  .onEnd((event) => {
+    if (event.translationX > SCREEN_WIDTH * 0.3) { 
+      translateX.value = withTiming(SCREEN_WIDTH, {}, () => {
+        runOnJS(router.back)();
+      });
+    } else {
+      translateX.value = withTiming(0);
+    }
+  });
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ translateX: translateX.value }],
+  }));
 
   return (
-    <ScrollView 
-      style={[styles.container, { backgroundColor: isDark ? '#000' : '#fff' }]}
-      contentContainerStyle={{ paddingBottom: 40 }}
-    >
-      {/* Custom Header */}
-      <View style={[styles.header, { backgroundColor: isDark ? '#000' : '#fff' }]}>
-        <TouchableOpacity 
-          onPress={() => router.back()}
-          style={styles.backButton}
+    <GestureDetector gesture={swipeGesture}>
+      <Animated.View style={[{ flex: 1 }, animatedStyle]}>
+        <ScrollView 
+          style={[styles.container, { backgroundColor: isDark ? '#000' : '#fff' }]}
+          contentContainerStyle={{ paddingBottom: 40 }}
         >
-          <Feather name="arrow-left" size={24} color={isDark ? '#fff' : '#000'} />
-        </TouchableOpacity>
-        <Text style={[styles.headerTitle, { color: isDark ? '#fff' : '#000', fontFamily: 'Tomorrow' }]}>
-          Document Details
-        </Text>
-      </View>
+          <View style={[styles.header, { backgroundColor: isDark ? '#000' : '#fff' }]}>
+            <TouchableOpacity 
+              style={styles.backButton}
+              onPress={handleNavigateBack}
+            >
+              <Feather name="arrow-left" size={24} color={isDark ? '#fff' : '#000'} />
+            </TouchableOpacity>
+            <Text style={[styles.headerTitle, { color: isDark ? '#fff' : '#000', fontFamily: 'Tomorrow' }]}>
+              Document Details
+            </Text>
+          </View>
 
-      {/* Image Container */}
-      <View style={styles.imageContainer}>
-        <Image 
-          source={{ uri: uri as string }}
-          style={styles.image}
-          resizeMode="contain"
-        />
-      </View>
+          <View style={styles.imageContainer}>
+            <Image 
+              source={{ uri: uri as string }}
+              style={styles.image}
+              resizeMode="contain"
+            />
+          </View>
 
-      <View style={styles.infoContainer}>
-        <View style={[styles.card, { backgroundColor: isDark ? '#1a1a1a' : '#f5f5f5' }]}>
-          <Text style={[styles.label, { color: isDark ? '#fff' : '#000', fontFamily: 'Tomorrow' }]}>
-            File Information
-          </Text>
-          <Text style={[styles.info, { color: isDark ? '#ccc' : '#666', fontFamily: 'Tomorrow' }]}>
-            Name: {title}
-          </Text>
-          <Text style={[styles.info, { color: isDark ? '#ccc' : '#666', fontFamily: 'Tomorrow' }]}>
-            Date: {date}
-          </Text>
-          <Text style={[styles.info, { color: isDark ? '#ccc' : '#666', fontFamily: 'Tomorrow' }]}>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-          </Text>
-        </View>
-      </View>
-    </ScrollView>
+          <View style={styles.infoContainer}>
+            <View style={[styles.card, { backgroundColor: isDark ? '#1a1a1a' : '#f5f5f5' }]}>
+              <Text style={[styles.label, { color: isDark ? '#fff' : '#000', fontFamily: 'Tomorrow' }]}>
+                File Information
+              </Text>
+              <Text style={[styles.info, { color: isDark ? '#ccc' : '#666', fontFamily: 'Tomorrow' }]}>
+                Name: {title}
+              </Text>
+              <Text style={[styles.info, { color: isDark ? '#ccc' : '#666', fontFamily: 'Tomorrow' }]}>
+                Date: {date}
+              </Text>
+              <Text style={[styles.info, { color: isDark ? '#ccc' : '#666', fontFamily: 'Tomorrow' }]}>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+              </Text>
+            </View>
+          </View>
+        </ScrollView>
+      </Animated.View>
+    </GestureDetector>
   );
 }
 
