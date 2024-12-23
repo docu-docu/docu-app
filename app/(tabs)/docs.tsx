@@ -3,6 +3,9 @@ import { StyleSheet, Text, View, TextInput, ScrollView, TouchableOpacity, Dimens
 import { Ionicons } from "@expo/vector-icons";
 import * as FileSystem from 'expo-file-system';
 import { useFocusEffect } from '@react-navigation/native';
+import { router } from 'expo-router';
+import { Feather } from "@expo/vector-icons";
+import { useColorScheme } from 'react-native';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -105,18 +108,81 @@ export default function Docs() {
     setFilteredDocuments(filtered);
   }, [searchQuery, documents]);
 
-  const DocumentTile = ({ title, date, uri }) => (
-    <TouchableOpacity 
-      style={styles.documentTile}
-      onPress={() => {
-        console.log('Opening document:', uri);
-      }}
-    >
-      <Ionicons name="document-text-outline" size={24} color="#666" />
-      <Text style={[styles.documentTitle, { fontFamily: 'Tomorrow' }]} numberOfLines={1}>{title}</Text>
-      <Text style={[styles.documentDate, { fontFamily: 'Tomorrow' }]}>{date}</Text>
-    </TouchableOpacity>
-  );
+  const DocumentTile = ({ title, date, uri }) => {
+    const [pressTimeout, setPressTimeout] = useState<NodeJS.Timeout | null>(null);
+    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+    const colorScheme = useColorScheme();
+    const isDark = colorScheme === 'dark';
+  
+    const handlePressIn = () => {
+      const timeout = setTimeout(() => {
+        setShowDeleteConfirm(true);
+      }, 1500);
+      setPressTimeout(timeout);
+    };
+  
+    const handlePressOut = () => {
+      if (pressTimeout) {
+        clearTimeout(pressTimeout);
+        setPressTimeout(null);
+      }
+    };
+  
+    const handleDelete = async () => {
+      try {
+        await FileSystem.deleteAsync(uri);
+        loadDocuments(); // This will refresh the list
+        setShowDeleteConfirm(false);
+      } catch (error) {
+        console.error('Error deleting file:', error);
+      }
+    };
+  
+    return (
+      <TouchableOpacity 
+        style={[
+          styles.documentTile,  // Changed from documentTitle to documentTile
+          { backgroundColor: showDeleteConfirm ? '#ff4444' : isDark ? '#1a1a1a' : '#f5f5f5' }
+        ]}
+        onPress={() => {
+          if (showDeleteConfirm) {
+            handleDelete();
+          } else {
+            router.push({
+              pathname: '/details',
+              params: { uri, title, date }
+            });
+          }
+        }}
+        onPressIn={handlePressIn}
+        onPressOut={handlePressOut}
+      >
+        {showDeleteConfirm ? (
+          <View style={styles.tileContent}>
+            <Feather name="trash-2" size={24} color="#fff" />
+            <Text style={[styles.deleteText, { fontFamily: 'Tomorrow' }]}>
+              Release to Delete
+            </Text>
+          </View>
+        ) : (
+          <View style={styles.tileContent}>
+            <Ionicons name="document-text-outline" size={24} color={isDark ? '#fff' : '#666'} />
+            <Text 
+              style={[styles.documentTitle, { color: isDark ? '#fff' : '#000', fontFamily: 'Tomorrow' }]} 
+              numberOfLines={1}
+            >
+              {title}
+            </Text>
+            <Text 
+              style={[styles.documentDate, { color: isDark ? '#ccc' : '#666', fontFamily: 'Tomorrow' }]}
+            >
+              {date}
+            </Text>
+          </View>
+        )}
+      </TouchableOpacity>
+    );
+  };
 
   return (
     <View style={styles.container}>
@@ -197,6 +263,10 @@ const styles = StyleSheet.create({
     padding: 15,
     backgroundColor: '#f5f5f5',
     borderRadius: 10,
+    overflow: 'hidden',
+  },
+  tileContent: {
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -211,4 +281,12 @@ const styles = StyleSheet.create({
     color: '#666',
     marginTop: 4,
   },
+  deleteText: {
+    fontSize: 14,
+    fontWeight: '500',
+    marginTop: 8,
+    color: '#fff',
+    textAlign: 'center',
+  },
 });
+
