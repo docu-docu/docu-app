@@ -1,39 +1,52 @@
-import React from 'react';
-import { View, Text, Image, StyleSheet, ScrollView, useColorScheme, Dimensions, TouchableOpacity } from 'react-native';
-import { useLocalSearchParams, Stack, router } from 'expo-router';
-import { Feather } from '@expo/vector-icons';
-import { GestureDetector, Gesture } from 'react-native-gesture-handler';
-import Animated, { useAnimatedStyle, withTiming, useSharedValue } from 'react-native-reanimated';
-import { runOnJS } from 'react-native-reanimated';
+import React from "react";
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  ScrollView,
+  useColorScheme,
+  Dimensions,
+  TouchableOpacity,
+} from "react-native";
+import { useLocalSearchParams, Stack, router } from "expo-router";
+import { Feather } from "@expo/vector-icons";
+import { GestureDetector, Gesture } from "react-native-gesture-handler";
+import Animated, {
+  useAnimatedStyle,
+  withTiming,
+  useSharedValue,
+} from "react-native-reanimated";
+import { runOnJS } from "react-native-reanimated";
 
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
+const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
 export default function DocDetails() {
   const params = useLocalSearchParams();
   const { uri, title, date } = params;
   const colorScheme = useColorScheme();
-  const isDark = colorScheme === 'dark';
+  const isDark = colorScheme === "dark";
   const translateX = useSharedValue(0);
 
   const handleNavigateBack = () => {
-    router.push('/(tabs)/docs'); 
+    router.push("/(tabs)/docs");
   };
 
   const swipeGesture = Gesture.Pan()
-  .onUpdate((event) => {
-    if (event.translationX > 0) { 
-      translateX.value = event.translationX;
-    }
-  })
-  .onEnd((event) => {
-    if (event.translationX > SCREEN_WIDTH * 0.3) { 
-      translateX.value = withTiming(SCREEN_WIDTH, {}, () => {
-        runOnJS(router.back)();
-      });
-    } else {
-      translateX.value = withTiming(0);
-    }
-  });
+    .onUpdate((event) => {
+      if (event.translationX > 0) {
+        translateX.value = event.translationX;
+      }
+    })
+    .onEnd((event) => {
+      if (event.translationX > SCREEN_WIDTH * 0.3) {
+        translateX.value = withTiming(SCREEN_WIDTH, {}, () => {
+          runOnJS(router.back)();
+        });
+      } else {
+        translateX.value = withTiming(0);
+      }
+    });
 
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ translateX: translateX.value }],
@@ -42,24 +55,41 @@ export default function DocDetails() {
   return (
     <GestureDetector gesture={swipeGesture}>
       <Animated.View style={[{ flex: 1 }, animatedStyle]}>
-        <ScrollView 
-          style={[styles.container, { backgroundColor: isDark ? '#000' : '#fff' }]}
+        <ScrollView
+          style={[
+            styles.container,
+            { backgroundColor: isDark ? "#000" : "#fff" },
+          ]}
           contentContainerStyle={{ paddingBottom: 40 }}
         >
-          <View style={[styles.header, { backgroundColor: isDark ? '#000' : '#fff' }]}>
-            <TouchableOpacity 
+          <View
+            style={[
+              styles.header,
+              { backgroundColor: isDark ? "#000" : "#fff" },
+            ]}
+          >
+            <TouchableOpacity
               style={styles.backButton}
               onPress={handleNavigateBack}
             >
-              <Feather name="arrow-left" size={24} color={isDark ? '#fff' : '#000'} />
+              <Feather
+                name="arrow-left"
+                size={24}
+                color={isDark ? "#fff" : "#000"}
+              />
             </TouchableOpacity>
-            <Text style={[styles.headerTitle, { color: isDark ? '#fff' : '#000', fontFamily: 'Tomorrow' }]}>
+            <Text
+              style={[
+                styles.headerTitle,
+                { color: isDark ? "#fff" : "#000", fontFamily: "Tomorrow" },
+              ]}
+            >
               Document Details
             </Text>
           </View>
 
           <View style={styles.imageContainer}>
-            <Image 
+            <Image
               source={{ uri: uri as string }}
               style={styles.image}
               resizeMode="contain"
@@ -67,18 +97,44 @@ export default function DocDetails() {
           </View>
 
           <View style={styles.infoContainer}>
-            <View style={[styles.card, { backgroundColor: isDark ? '#1a1a1a' : '#f5f5f5' }]}>
-              <Text style={[styles.label, { color: isDark ? '#fff' : '#000', fontFamily: 'Tomorrow' }]}>
+            <View
+              style={[
+                styles.card,
+                { backgroundColor: isDark ? "#1a1a1a" : "#f5f5f5" },
+              ]}
+            >
+              <Text
+                style={[
+                  styles.label,
+                  { color: isDark ? "#fff" : "#000", fontFamily: "Tomorrow" },
+                ]}
+              >
                 File Information
               </Text>
-              <Text style={[styles.info, { color: isDark ? '#ccc' : '#666', fontFamily: 'Tomorrow' }]}>
+              <Text
+                style={[
+                  styles.info,
+                  { color: isDark ? "#ccc" : "#666", fontFamily: "Tomorrow" },
+                ]}
+              >
                 Name: {title}
               </Text>
-              <Text style={[styles.info, { color: isDark ? '#ccc' : '#666', fontFamily: 'Tomorrow' }]}>
+              <Text
+                style={[
+                  styles.info,
+                  { color: isDark ? "#ccc" : "#666", fontFamily: "Tomorrow" },
+                ]}
+              >
                 Date: {date}
               </Text>
-              <Text style={[styles.info, { color: isDark ? '#ccc' : '#666', fontFamily: 'Tomorrow' }]}>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+              <Text
+                style={[
+                  styles.info,
+                  { color: isDark ? "#ccc" : "#666", fontFamily: "Tomorrow" },
+                ]}
+              >
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
+                eiusmod tempor incididunt ut labore et dolore magna aliqua.
               </Text>
             </View>
           </View>
@@ -94,11 +150,11 @@ const styles = StyleSheet.create({
   },
   header: {
     height: 60,
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     paddingHorizontal: 20,
     borderBottomWidth: 1,
-    borderBottomColor: '#eee',
+    borderBottomColor: "#eee",
     marginTop: 40,
   },
   backButton: {
@@ -107,11 +163,11 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   imageContainer: {
     padding: 20,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: "#f5f5f5",
   },
   image: {
     width: SCREEN_WIDTH - 40, // Full width minus padding
@@ -125,7 +181,7 @@ const styles = StyleSheet.create({
     padding: 20,
     borderRadius: 15,
     marginBottom: 20,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 2,
@@ -136,12 +192,12 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: "600",
     marginBottom: 15,
   },
   info: {
     fontSize: 16,
     marginBottom: 10,
     lineHeight: 24,
-  }
+  },
 });

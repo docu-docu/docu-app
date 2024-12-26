@@ -1,10 +1,16 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View, Dimensions } from 'react-native';
+import React, { useState } from "react";
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  Dimensions,
+} from "react-native";
 import { CameraView } from "expo-camera";
-import { StatusBar } from 'expo-status-bar';
+import { StatusBar } from "expo-status-bar";
 import { Ionicons } from "@expo/vector-icons";
 
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
+const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
 
 global.cameraRef = null;
 
@@ -42,8 +48,6 @@ export default function CameraScreen() {
         <View style={styles.topRightCorner} />
         <View style={styles.bottomLeftCorner} />
         <View style={styles.bottomRightCorner} />
-
-        
       </CameraView>
     </View>
   );
@@ -52,80 +56,80 @@ export default function CameraScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000',
+    backgroundColor: "#000",
   },
   camera: {
     flex: 1,
   },
   flash: {
-    position: 'absolute',
+    position: "absolute",
     top: 60,
     left: 20,
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    backgroundColor: "rgba(0, 0, 0, 0.6)",
     width: 40,
     height: 40,
     borderRadius: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   topLeftCorner: {
-    position: 'absolute',
+    position: "absolute",
     width: 60,
     height: 60,
     borderLeftWidth: 3,
-    borderLeftColor: 'white',
+    borderLeftColor: "white",
     borderRadius: 3,
     borderTopWidth: 3,
-    borderTopColor: 'white',
-    left: '20%',
-    top: '30%',
+    borderTopColor: "white",
+    left: "20%",
+    top: "30%",
   },
   topRightCorner: {
-    position: 'absolute',
+    position: "absolute",
     width: 60,
     height: 60,
     borderRadius: 3,
     borderRightWidth: 3,
-    borderRightColor: 'white',
+    borderRightColor: "white",
     borderTopWidth: 3,
-    borderTopColor: 'white',
-    right: '20%',
-    top: '30%',
+    borderTopColor: "white",
+    right: "20%",
+    top: "30%",
   },
   bottomLeftCorner: {
     borderRadius: 3,
-    position: 'absolute',
+    position: "absolute",
     width: 60,
     height: 60,
     borderLeftWidth: 3,
-    borderLeftColor: 'white',
+    borderLeftColor: "white",
     borderBottomWidth: 3,
-    borderBottomColor: 'white',
-    left: '20%',
-    bottom: '30%',
+    borderBottomColor: "white",
+    left: "20%",
+    bottom: "30%",
   },
   bottomRightCorner: {
     borderRadius: 3,
-    position: 'absolute',
+    position: "absolute",
     width: 60,
     height: 60,
     borderRightWidth: 3,
-    borderRightColor: 'white',
+    borderRightColor: "white",
     borderBottomWidth: 3,
-    borderBottomColor: 'white',
-    right: '20%',
-    bottom: '30%',
+    borderBottomColor: "white",
+    right: "20%",
+    bottom: "30%",
   },
   buttonContainer: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 90,
-    width: '100%',
-    alignItems: 'center',
+    width: "100%",
+    alignItems: "center",
   },
-  
+
   text: {
     fontSize: 16,
-    fontWeight: '600',
-    color: 'white',
-  }
+    fontWeight: "600",
+    color: "white",
+  },
 });
