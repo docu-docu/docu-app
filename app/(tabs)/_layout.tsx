@@ -58,8 +58,8 @@ export default function TabLayout() {
 
         // Immediately navigate to name-scan with the photo URI
         router.replace({
-          pathname: "/name-scan",
-          params: { photoUri: photo.uri },
+          pathname: "/preview-crop",
+          params: { photoUri: photo.uri }
         });
       }
     } catch (error) {
